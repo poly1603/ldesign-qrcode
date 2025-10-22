@@ -1,8 +1,8 @@
 {
   "name": "@ldesign/qrcode",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "type": "module",
-  "description": "A powerful and flexible QR code generator and scanner for web applications, supporting multiple frameworks",
+  "description": "Ultra-high performance QR code generator with WebGL acceleration, advanced filters, 3D transforms, and memory optimization",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -52,17 +52,24 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rimraf dist && rollup -c",
+    "build:strict": "rimraf dist && tsc --project tsconfig.strict.json && rollup -c",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:benchmark": "vitest tests/benchmarks",
+    "test:e2e": "playwright test",
     "lint": "eslint src --ext .ts,.tsx",
+    "lint:strict": "eslint src --ext .ts,.tsx --config .eslintrc.strict.json",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "example": "cd examples/vite-demo && npm run dev",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "prepublishOnly": "npm run build && npm run test",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "type-check:strict": "tsc --project tsconfig.strict.json --noEmit",
+    "analyze": "npm run build && npx rollup-plugin-visualizer",
+    "perf": "npm run test:benchmark"
   },
   "keywords": [
     "qrcode",
@@ -118,13 +125,17 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0",
-    "vue": ">=3.0.0"
+    "vue": ">=3.0.0",
+    "@tensorflow/tfjs": ">=4.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "@tensorflow/tfjs": {
       "optional": true
     }
   },

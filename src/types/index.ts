@@ -20,6 +20,8 @@ export enum RenderType {
   Canvas = 'canvas',
   /** SVG rendering */
   SVG = 'svg',
+  /** WebGL rendering (GPU accelerated) */
+  WebGL = 'webgl',
 }
 
 /**
@@ -234,6 +236,62 @@ export interface TransformConfig {
   scale?: number;
 }
 
+/**
+ * Advanced 3D Transform configuration
+ */
+export interface Transform3DConfig {
+  /** X-axis rotation in degrees */
+  rotateX?: number;
+  /** Y-axis rotation in degrees */
+  rotateY?: number;
+  /** Z-axis rotation in degrees */
+  rotateZ?: number;
+  /** Perspective distance in pixels */
+  perspective?: number;
+  /** Perspective origin X (0-1) */
+  perspectiveOriginX?: number;
+  /** Perspective origin Y (0-1) */
+  perspectiveOriginY?: number;
+  /** X-axis scale */
+  scaleX?: number;
+  /** Y-axis scale */
+  scaleY?: number;
+  /** Z-axis scale */
+  scaleZ?: number;
+  /** X-axis translation in pixels */
+  translateX?: number;
+  /** Y-axis translation in pixels */
+  translateY?: number;
+  /** Z-axis translation in pixels */
+  translateZ?: number;
+  /** X-axis skew in degrees */
+  skewX?: number;
+  /** Y-axis skew in degrees */
+  skewY?: number;
+  /** Light source position */
+  lightSource?: { x: number; y: number; z: number };
+  /** Ambient light intensity (0-1) */
+  ambientLight?: number;
+  /** Diffuse light intensity (0-1) */
+  diffuseLight?: number;
+}
+
+/**
+ * Filter configuration
+ */
+export interface FilterConfig {
+  /** Filter type */
+  type: 'none' | 'blur' | 'sharpen' | 'edge-detect' | 'emboss' | 'grayscale' |
+  'sepia' | 'invert' | 'brightness' | 'contrast' | 'saturation' | 'hue' |
+  'vintage' | 'sketch' | 'pixelate';
+  /** Filter intensity (0-1) */
+  intensity?: number;
+  /** Radius for blur/pixelate */
+  radius?: number;
+  /** Threshold for edge-detect/sketch */
+  threshold?: number;
+}
+
 
 /**
  * Sub marker configuration
@@ -310,8 +368,13 @@ export interface QRCodeStyle {
   /** Render layer for selective module rendering */
   renderLayer?: RenderLayer;
 
-  /** Transform configuration */
+  /** Transform configuration (simple 2D) */
   transform?: TransformConfig;
+  /** Advanced 3D transform configuration */
+  transform3D?: Transform3DConfig;
+  /** Filter configuration (single or array for chaining) */
+  filter?: FilterConfig | FilterConfig[];
+
   /** Enable margin noise */
   marginNoise?: boolean;
   /** Random seed for noise generation */

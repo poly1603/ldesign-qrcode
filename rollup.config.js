@@ -71,4 +71,16 @@ export default [
   // React adapter
   createConfig('src/adapters/react/index.tsx', 'react', { react: 'React', 'react-dom': 'ReactDOM' }),
   createDtsConfig('src/adapters/react/index.tsx', 'dist/react.d.ts'),
+
+  // Scanner package  
+  createConfig('src/scanner/index.ts', 'scanner'),
+  createDtsConfig('src/scanner/index.ts', 'dist/scanner.d.ts'),
+
+  // Presets package
+  createConfig('src/presets/index.ts', 'presets'),
+  createDtsConfig('src/presets/index.ts', 'dist/presets.d.ts'),
+
+  // Templates package
+  createConfig('src/utils/content-templates.ts', 'templates'),
+  createDtsConfig('src/utils/content-templates.ts', 'dist/templates.d.ts'),
 ];

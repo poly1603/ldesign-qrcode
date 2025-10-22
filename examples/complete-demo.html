@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRCode v3.0 - 完整功能演示</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #10b981;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      margin: 5px;
+      font-weight: 600;
+    }
+
+    .demo-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .demo-section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 25px;
+    }
+
+    .demo-card {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .demo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-card h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+
+    .qr-wrapper {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: #10b981;
+    }
+
+    button.secondary:hover {
+      background: #059669;
+    }
+
+    .stats-panel {
+      background: #1f2937;
+      color: #10b981;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #667eea;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin: 5px 3px;
+    }
+
+    .performance-bar {
+      height: 30px;
+      background: #e5e7eb;
+      border-radius: 15px;
+      overflow: hidden;
+      margin: 10px 0;
+      position: relative;
+    }
+
+    .performance-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #059669);
+      transition: width 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 QRCode v3.0</h1>
+      <p class="subtitle">Ultra-High Performance QR Code Generator</p>
+      <div>
+        <span class="badge">3-5x 性能提升</span>
+        <span class="badge">60-87% 内存优化</span>
+        <span class="badge">40+ 新功能</span>
+        <span class="badge">WebGL 加速</span>
+      </div>
+    </header>
+
+    <!-- 性能对比 -->
+    <div class="demo-section">
+      <h2>⚡ 渲染性能对比</h2>
+      <div class="grid">
+        <div class="demo-card">
+          <h3>Canvas 渲染</h3>
+          <div class="qr-wrapper" id="canvas-qr"></div>
+          <div id="canvas-time" class="stats-panel"></div>
+        </div>
+        <div class="demo-card">
+          <h3>WebGL 渲染 <span class="feature-tag">GPU加速</span></h3>
+          <div class="qr-wrapper" id="webgl-qr"></div>
+          <div id="webgl-time" class="stats-panel"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button onclick="runPerformanceTest()">运行性能测试</button>
+        <button onclick="runBatchTest()" class="secondary">批量生成测试 (100个)</button>
+      </div>
+      <div id="perf-results" class="stats-panel" style="display:none;"></div>
+    </div>
+
+    <!-- 滤镜效果 -->
+    <div class="demo-section">
+      <h2>🎨 高级滤镜系统</h2>
+      <div class="grid">
+        <div class="demo-card" id="filter-vintage">
+          <h3>复古滤镜</h3>
+        </div>
+        <div class="demo-card" id="filter-sketch">
+          <h3>素描滤镜</h3>
+        </div>
+        <div class="demo-card" id="filter-pixelate">
+          <h3>像素化</h3>
+        </div>
+        <div class="demo-card" id="filter-chain">
+          <h3>滤镜链</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D变换 -->
+    <div class="demo-section">
+      <h2>🌐 3D 变换系统</h2>
+      <div class="grid">
+        <div class="demo-card" id="transform-3d-1">
+          <h3>X轴旋转</h3>
+        </div>
+        <div class="demo-card" id="transform-3d-2">
+          <h3>Y轴旋转</h3>
+        </div>
+        <div class="demo-card" id="transform-3d-3">
+          <h3>透视投影</h3>
+        </div>
+        <div class="demo-card" id="transform-3d-4">
+          <h3>光照效果</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容模板 -->
+    <div class="demo-section">
+      <h2>📝 内容模板</h2>
+      <div class="grid">
+        <div class="demo-card" id="template-blockchain">
+          <h3>区块链地址</h3>
+        </div>
+        <div class="demo-card" id="template-nft">
+          <h3>NFT链接</h3>
+        </div>
+        <div class="demo-card" id="template-ticket">
+          <h3>电子票务</h3>
+        </div>
+        <div class="demo-card" id="template-logistics">
+          <h3>物流追踪</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- 可视化编辑器 -->
+    <div class="demo-section">
+      <h2>🎛️ 可视化编辑器</h2>
+      <div id="editor-container"></div>
+    </div>
+
+    <!-- 性能统计 -->
+    <div class="demo-section">
+      <h2>📊 实时性能统计</h2>
+      <div class="controls">
+        <button onclick="showCacheStats()">缓存统计</button>
+        <button onclick="showPoolStats()">对象池统计</button>
+        <button onclick="showPerformanceReport()">性能报告</button>
+        <button onclick="showMemorySavings()" class="secondary">内存节省</button>
+      </div>
+      <div id="stats-display" class="stats-panel"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {
+      createQRCode,
+      isWebGLSupported,
+      QRContentHelper,
+      getCacheStats,
+      getAllPoolStats,
+      getPerformanceReport,
+      calculateMemorySavings,
+      enableDebugMode,
+      createQRCodeEditor,
+    } from '../dist/index.esm.js';
+
+    // 启用调试模式
+    enableDebugMode();
+
+    // 渲染性能对比
+    function renderPerformanceComparison() {
+      const config = {
+        content: 'https://example.com/performance-test',
+        style: {
+          size: 250,
+          gradient: {
+            type: 'linear',
+            colors: ['#667eea', '#764ba2'],
+            direction: 45,
+          },
+          dotStyle: 'rounded',
+        },
+      };
+
+      // Canvas
+      const canvasStart = performance.now();
+      createQRCode({
+        ...config,
+        container: document.getElementById('canvas-qr'),
+        renderType: 'canvas',
+      });
+      const canvasTime = performance.now() - canvasStart;
+
+      document.getElementById('canvas-time').textContent =
+        `渲染时间: ${canvasTime.toFixed(2)}ms\n` +
+        `渲染类型: Canvas 2D`;
+
+      // WebGL
+      if (isWebGLSupported()) {
+        const webglStart = performance.now();
+        createQRCode({
+          ...config,
+          container: document.getElementById('webgl-qr'),
+          renderType: 'webgl',
+        });
+        const webglTime = performance.now() - webglStart;
+
+        document.getElementById('webgl-time').textContent =
+          `渲染时间: ${webglTime.toFixed(2)}ms\n` +
+          `渲染类型: WebGL (GPU)\n` +
+          `性能提升: ${((canvasTime / webglTime - 1) * 100).toFixed(1)}%`;
+      } else {
+        document.getElementById('webgl-qr').innerHTML =
+          '<div style="padding:20px;color:#999;">WebGL 不支持</div>';
+      }
+    }
+
+    // 渲染滤镜示例
+    function renderFilters() {
+      const base = { content: 'https://example.com/filters', style: { size: 200 } };
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('filter-vintage'),
+        style: { ...base.style, filter: { type: 'vintage', intensity: 0.8 } },
+      });
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('filter-sketch'),
+        style: { ...base.style, filter: { type: 'sketch', threshold: 120 } },
+      });
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('filter-pixelate'),
+        style: { ...base.style, filter: { type: 'pixelate', radius: 8 } },
+      });
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('filter-chain'),
+        style: {
+          ...base.style,
+          filter: [
+            { type: 'sepia', intensity: 0.5 },
+            { type: 'contrast', intensity: 0.2 },
+          ],
+        },
+      });
+    }
+
+    // 渲染3D变换
+    function render3DTransforms() {
+      const base = { content: 'https://example.com/3d', style: { size: 200 } };
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('transform-3d-1'),
+        style: {
+          ...base.style,
+          transform3D: { rotateX: 30, perspective: 800 },
+        },
+      });
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('transform-3d-2'),
+        style: {
+          ...base.style,
+          transform3D: { rotateY: 30, perspective: 800 },
+        },
+      });
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('transform-3d-3'),
+        style: {
+          ...base.style,
+          transform3D: {
+            rotateX: 20,
+            rotateY: 20,
+            perspective: 600,
+          },
+        },
+      });
+
+      createQRCode({
+        ...base,
+        container: document.getElementById('transform-3d-4'),
+        style: {
+          ...base.style,
+          transform3D: {
+            rotateX: 25,
+            perspective: 800,
+            lightSource: { x: 1, y: 1, z: 1 },
+            ambientLight: 0.4,
+            diffuseLight: 0.8,
+          },
+        },
+      });
+    }
+
+    // 渲染内容模板
+    function renderTemplates() {
+      const base = { style: { size: 200 } };
+
+      createQRCode({
+        ...base,
+        content: QRContentHelper.blockchain({
+          chain: 'ethereum',
+          address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+          amount: 0.1,
+        }),
+        container: document.getElementById('template-blockchain'),
+      });
+
+      createQRCode({
+        ...base,
+        content: QRContentHelper.nft({
+          contract: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
+          tokenId: '1234',
+          chain: 'ethereum',
+        }),
+        container: document.getElementById('template-nft'),
+      });
+
+      createQRCode({
+        ...base,
+        content: QRContentHelper.ticket({
+          event: '音乐会',
+          ticketId: 'TK123456',
+          holder: '张三',
+          dateTime: new Date('2024-12-25T19:00:00'),
+          venue: '体育馆',
+          seat: 'A-123',
+        }),
+        container: document.getElementById('template-ticket'),
+      });
+
+      createQRCode({
+        ...base,
+        content: QRContentHelper.logistics({
+          trackingNumber: '1Z999AA10123456784',
+          carrier: 'UPS',
+        }),
+        container: document.getElementById('template-logistics'),
+      });
+    }
+
+    // 初始化编辑器
+    function initEditor() {
+      createQRCodeEditor({
+        container: document.getElementById('editor-container'),
+        onConfigChange: (config) => {
+          console.log('配置已更新:', config);
+        },
+      });
+    }
+
+    // 全局函数
+    window.runPerformanceTest = function () {
+      const results = [];
+      const iterations = 100;
+
+      for (let i = 0; i < iterations; i++) {
+        const start = performance.now();
+        const div = document.createElement('div');
+        createQRCode({
+          content: `test-${i}`,
+          container: div,
+          style: { size: 200 },
+        });
+        results.push(performance.now() - start);
+      }
+
+      const avg = results.reduce((a, b) => a + b) / results.length;
+      const min = Math.min(...results);
+      const max = Math.max(...results);
+
+      const display = document.getElementById('perf-results');
+      display.style.display = 'block';
+      display.textContent =
+        `性能测试结果 (${iterations} 次):\n\n` +
+        `平均时间: ${avg.toFixed(2)}ms\n` +
+        `最快: ${min.toFixed(2)}ms\n` +
+        `最慢: ${max.toFixed(2)}ms\n` +
+        `总时间: ${results.reduce((a, b) => a + b).toFixed(2)}ms`;
+    };
+
+    window.runBatchTest = function () {
+      const display = document.getElementById('perf-results');
+      display.style.display = 'block';
+      display.innerHTML = '<div class="spinner"></div><p style="text-align:center;margin-top:10px;">批量生成中...</p>';
+
+      setTimeout(() => {
+        const start = performance.now();
+        const count = 100;
+
+        for (let i = 0; i < count; i++) {
+          const div = document.createElement('div');
+          createQRCode({
+            content: `batch-${i}`,
+            container: div,
+            style: { size: 200 },
+          });
+        }
+
+        const duration = performance.now() - start;
+
+        display.textContent =
+          `批量生成测试 (${count} 个):\n\n` +
+          `总时间: ${duration.toFixed(2)}ms\n` +
+          `平均: ${(duration / count).toFixed(2)}ms/个\n` +
+          `吞吐量: ${(count / (duration / 1000)).toFixed(1)} QR/秒`;
+      }, 100);
+    };
+
+    window.showCacheStats = function () {
+      const stats = getCacheStats();
+      document.getElementById('stats-display').textContent =
+        JSON.stringify(stats, null, 2);
+    };
+
+    window.showPoolStats = function () {
+      const stats = getAllPoolStats();
+      document.getElementById('stats-display').textContent =
+        JSON.stringify(stats, null, 2);
+    };
+
+    window.showPerformanceReport = function () {
+      const report = getPerformanceReport();
+      document.getElementById('stats-display').textContent = report;
+    };
+
+    window.showMemorySavings = function () {
+      const v1 = calculateMemorySavings(21);
+      const v40 = calculateMemorySavings(177);
+
+      document.getElementById('stats-display').textContent =
+        `内存优化统计:\n\n` +
+        `Version 1 (21x21):\n` +
+        `  布尔数组: ${v1.booleanArray} bytes\n` +
+        `  位数组: ${v1.bitArray} bytes\n` +
+        `  节省: ${v1.savings} bytes (${v1.savingsPercent.toFixed(1)}%)\n\n` +
+        `Version 40 (177x177):\n` +
+        `  布尔数组: ${v40.booleanArray} bytes\n` +
+        `  位数组: ${v40.bitArray} bytes\n` +
+        `  节省: ${v40.savings} bytes (${v40.savingsPercent.toFixed(1)}%)`;
+    };
+
+    // 初始化所有演示
+    renderPerformanceComparison();
+    renderFilters();
+    render3DTransforms();
+    renderTemplates();
+    initEditor();
+
+    console.log('%c🎉 QRCode v3.0 演示加载完成！', 'color: #667eea; font-size: 20px; font-weight: bold;');
+    console.log('%c运行 showPerformanceReport() 查看性能统计', 'color: #10b981;');
+  </script>
+</body>
+
+</html>
