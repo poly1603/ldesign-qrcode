@@ -1,0 +1,77 @@
+{
+  "name": "@ldesign/qrcode-core",
+  "version": "3.0.0",
+  "description": "Ultra-high performance QR code generator core engine",
+  "keywords": [
+    "qrcode",
+    "qr-code",
+    "generator",
+    "scanner",
+    "webgl",
+    "canvas",
+    "svg",
+    "typescript"
+  ],
+  "author": "ldesign",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./types": {
+      "types": "./es/types/index.d.ts",
+      "import": "./es/types/index.js",
+      "require": "./lib/types/index.cjs"
+    },
+    "./renderers": {
+      "types": "./es/renderers/index.d.ts",
+      "import": "./es/renderers/index.js",
+      "require": "./lib/renderers/index.cjs"
+    },
+    "./scanner": {
+      "types": "./es/scanner/index.d.ts",
+      "import": "./es/scanner/index.js",
+      "require": "./lib/scanner/index.cjs"
+    },
+    "./utils": {
+      "types": "./es/utils/index.d.ts",
+      "import": "./es/utils/index.js",
+      "require": "./lib/utils/index.cjs"
+    }
+  },
+  "main": "./lib/index.cjs",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
+  "unpkg": "./dist/index.min.js",
+  "jsdelivr": "./dist/index.min.js",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "es",
+    "lib",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "ldesign-builder watch",
+    "build": "ldesign-builder build",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "demo": "cd demo && pnpm dev",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "qrcode-generator": "^1.4.4"
+  },
+  "devDependencies": {
+    "@ldesign/builder": "workspace:*",
+    "@types/node": "^20.11.16",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1",
+    "@vitest/coverage-v8": "^1.0.0"
+  }
+}
+

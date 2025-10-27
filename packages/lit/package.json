@@ -1,0 +1,52 @@
+{
+  "name": "@ldesign/qrcode-lit",
+  "version": "3.0.0",
+  "description": "Lit Web Components for QR code generator",
+  "keywords": [
+    "qrcode",
+    "qr-code",
+    "web-components",
+    "lit",
+    "lit-element"
+  ],
+  "author": "ldesign",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.cjs"
+    }
+  },
+  "main": "./lib/index.cjs",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "es",
+    "lib"
+  ],
+  "scripts": {
+    "dev": "ldesign-builder watch",
+    "build": "ldesign-builder build",
+    "test": "vitest",
+    "demo": "cd demo && pnpm dev",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ldesign/qrcode-core": "workspace:*",
+    "lit": "^3.0.0",
+    "@lit/reactive-element": "^2.0.0",
+    "lit-html": "^3.0.0"
+  },
+  "devDependencies": {
+    "@ldesign/builder": "workspace:*",
+    "@types/node": "^20.11.16",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  }
+}
+
