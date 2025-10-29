@@ -434,7 +434,7 @@ export const performanceMonitor = new QRCodePerformanceMonitor();
 /**
  * Global debugger instance
  */
-export const debugger = new QRCodeDebugger();
+export const qrcodeDebugger = new QRCodeDebugger();
 
 /**
  * Enable debug mode
