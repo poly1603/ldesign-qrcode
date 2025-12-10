@@ -22,11 +22,6 @@
       "require": "./dist/vue.cjs.js",
       "types": "./dist/vue.d.ts"
     },
-    "./react": {
-      "import": "./dist/react.esm.js",
-      "require": "./dist/react.cjs.js",
-      "types": "./dist/react.d.ts"
-    },
     "./scanner": {
       "import": "./dist/scanner.esm.js",
       "require": "./dist/scanner.cjs.js",
@@ -62,6 +57,8 @@
     "lint:strict": "eslint src --ext .ts,.tsx --config .eslintrc.strict.json",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "example": "cd examples/vite-demo && npm run dev",
+    "playground": "cd playground && pnpm dev",
+    "playground:build": "cd playground && pnpm build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
@@ -77,7 +74,6 @@
     "scanner",
     "reader",
     "vue",
-    "react",
     "angular",
     "svelte",
     "canvas",
@@ -101,9 +97,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@testing-library/react": "^14.1.2",
     "@types/node": "^20.11.16",
-    "@types/react": "^18.2.52",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "@vitest/ui": "^1.2.1",
@@ -123,14 +117,10 @@
     "vue": "^3.4.15"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
     "vue": ">=3.0.0",
     "@tensorflow/tfjs": ">=4.0.0"
   },
   "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
     "vue": {
       "optional": true
     },

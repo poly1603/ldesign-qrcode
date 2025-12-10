@@ -1,5 +1,6 @@
-import type { QRCodeConfig, QRCodeStyle, LogoConfig } from '../types';
+import type { QRCodeConfig, QRCodeStyle, LogoConfig, DotStyle } from '../types';
 import { QRCodeGenerator } from '../core/generator';
+import { getDotSVGPath } from './styles/dots';
 
 /**
  * Default style configuration
@@ -66,9 +67,63 @@ export class SVGRenderer {
     bg.setAttribute('fill', this.style.bgColor);
     this.svg.appendChild(bg);
 
+    // Create defs for gradient if configured
+    const gradient = this.config.style?.gradient;
+    let fillValue = this.style.fgColor;
+
+    if (gradient) {
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const gradientId = `qr-gradient-${Date.now()}`;
+
+      if (gradient.type === 'radial') {
+        const radialGradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+        radialGradient.setAttribute('id', gradientId);
+        radialGradient.setAttribute('cx', '50%');
+        radialGradient.setAttribute('cy', '50%');
+        radialGradient.setAttribute('r', '50%');
+
+        gradient.colors.forEach((color, index) => {
+          const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+          stop.setAttribute('offset', `${(index / (gradient.colors.length - 1)) * 100}%`);
+          stop.setAttribute('stop-color', color);
+          radialGradient.appendChild(stop);
+        });
+
+        defs.appendChild(radialGradient);
+      } else {
+        const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        linearGradient.setAttribute('id', gradientId);
+
+        // Calculate gradient direction
+        const direction = gradient.direction || 0;
+        const rad = (direction * Math.PI) / 180;
+        const x1 = 50 - Math.cos(rad) * 50;
+        const y1 = 50 - Math.sin(rad) * 50;
+        const x2 = 50 + Math.cos(rad) * 50;
+        const y2 = 50 + Math.sin(rad) * 50;
+
+        linearGradient.setAttribute('x1', `${x1}%`);
+        linearGradient.setAttribute('y1', `${y1}%`);
+        linearGradient.setAttribute('x2', `${x2}%`);
+        linearGradient.setAttribute('y2', `${y2}%`);
+
+        gradient.colors.forEach((color, index) => {
+          const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+          stop.setAttribute('offset', `${(index / (gradient.colors.length - 1)) * 100}%`);
+          stop.setAttribute('stop-color', color);
+          linearGradient.appendChild(stop);
+        });
+
+        defs.appendChild(linearGradient);
+      }
+
+      this.svg.appendChild(defs);
+      fillValue = `url(#${gradientId})`;
+    }
+
     // Create group for QR modules
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    group.setAttribute('fill', this.style.fgColor);
+    group.setAttribute('fill', fillValue);
 
     // Apply rotation if configured
     const rotate = this.config.style?.rotate || 0;
@@ -78,6 +133,9 @@ export class SVGRenderer {
       group.setAttribute('transform', `rotate(${rotate} ${centerX} ${centerY})`);
     }
 
+    // Get dotStyle from config
+    const dotStyle = this.config.style?.dotStyle || 'square';
+
     // Draw QR modules
     for (let row = 0; row < moduleCount; row++) {
       for (let col = 0; col < moduleCount; col++) {
@@ -85,21 +143,24 @@ export class SVGRenderer {
           const x = (col + margin) * moduleSize;
           const y = (row + margin) * moduleSize;
 
-          if (this.style.cornerRadius > 0) {
-            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('x', String(x));
-            rect.setAttribute('y', String(y));
-            rect.setAttribute('width', String(moduleSize));
-            rect.setAttribute('height', String(moduleSize));
-            rect.setAttribute('rx', String(moduleSize * this.style.cornerRadius));
-            rect.setAttribute('ry', String(moduleSize * this.style.cornerRadius));
-            group.appendChild(rect);
+          // Use getDotSVGPath for styled dots
+          const pathData = getDotSVGPath(x, y, moduleSize, dotStyle as DotStyle, this.style.cornerRadius);
+
+          if (pathData) {
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathData);
+            group.appendChild(path);
           } else {
+            // Fallback to rect for unsupported styles
             const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
             rect.setAttribute('x', String(x));
             rect.setAttribute('y', String(y));
             rect.setAttribute('width', String(moduleSize));
             rect.setAttribute('height', String(moduleSize));
+            if (this.style.cornerRadius > 0) {
+              rect.setAttribute('rx', String(moduleSize * this.style.cornerRadius));
+              rect.setAttribute('ry', String(moduleSize * this.style.cornerRadius));
+            }
             group.appendChild(rect);
           }
         }

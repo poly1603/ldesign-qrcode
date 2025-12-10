@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100 dark:bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400 dark:bg-slate-500;
+}
+
+/* 代码块样式 */
+pre[class*="language-"] {
+  @apply rounded-xl text-sm overflow-auto;
+  max-height: 400px;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+/* 过渡动画 */
+.qrcode-animated {
+  animation: qrcode-scale-in 0.3s ease-out;
+}
+
+@keyframes qrcode-scale-in {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

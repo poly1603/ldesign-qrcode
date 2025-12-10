@@ -185,7 +185,9 @@ export class CanvasRenderer {
 
     // Draw custom eye styles if configured
     if (this.config.style?.eyeStyle) {
-      this.drawEyes(eyePositions, moduleSize, margin);
+      // Pass global gradient to eyes if no eye-specific gradient is set
+      const globalGradient = this.config.style?.gradient;
+      this.drawEyes(eyePositions, moduleSize, margin, globalGradient);
     }
 
     // Apply other visual effects if configured
@@ -250,7 +252,8 @@ export class CanvasRenderer {
   private drawEyes(
     eyePositions: Array<{ row: number; col: number; size: number }>,
     moduleSize: number,
-    margin: number
+    margin: number,
+    globalGradient?: typeof this.config.style.gradient
   ): void {
     if (!this.config.style?.eyeStyle) return;
 
@@ -258,14 +261,30 @@ export class CanvasRenderer {
       ? this.config.style.eyeStyle
       : [this.config.style.eyeStyle, this.config.style.eyeStyle, this.config.style.eyeStyle];
 
+    // Apply global gradient to eyes if available
+    if (globalGradient) {
+      const gradient = createCanvasGradient(this.ctx, globalGradient, this.style.size, this.style.size);
+      this.ctx.fillStyle = gradient;
+    }
+
     eyePositions.forEach((eye, index) => {
       const eyeStyle = eyeStyles[index] || eyeStyles[0];
+
+      // Merge global gradient into eye style if no eye-specific gradient
+      const mergedStyle = { ...eyeStyle };
+      if (globalGradient && !eyeStyle.outer?.gradient) {
+        mergedStyle.outer = { ...mergedStyle.outer, gradient: globalGradient };
+      }
+      if (globalGradient && !eyeStyle.inner?.gradient) {
+        mergedStyle.inner = { ...mergedStyle.inner, gradient: globalGradient };
+      }
+
       drawEye(
         this.ctx,
         eye,
         moduleSize,
         margin,
-        eyeStyle,
+        mergedStyle,
         (row, col) => this.generator.isDark(row, col),
         this.style.size
       );
@@ -475,7 +494,7 @@ export class CanvasRenderer {
       for (let col = 0; col < totalSize; col++) {
         // Check if in margin area
         const inMargin = row < margin || row >= moduleCount + margin ||
-                        col < margin || col >= moduleCount + margin;
+          col < margin || col >= moduleCount + margin;
 
         if (inMargin && random() < density) {
           const x = col * moduleSize + moduleSize / 2;
@@ -508,12 +527,12 @@ export class CanvasRenderer {
    */
   private applyEffect(effectType: EffectType): void {
     const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    
+
     if (effectType === 'crystalize') {
       // Crystalize effect: creates crystalline patterns
       this.applyCrystalizeEffect(imageData);
     }
-    
+
     this.ctx.putImageData(imageData, 0, 0);
   }
 
@@ -566,8 +585,8 @@ export class CanvasRenderer {
   }
 
 
-  
-  
+
+
 
   /**
    * Download as image

@@ -53,7 +53,7 @@ export {
   QRCodePerformanceMonitor,
   QRCodeDebugger,
   performanceMonitor,
-  debugger as qrDebugger,
+  qrDebugger,
   enableDebugMode,
   disableDebugMode,
   getPerformanceReport,
